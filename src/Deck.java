@@ -15,7 +15,7 @@ class Card {
 	private Suit Suit;
 	private Rank Rank;
 	private int position;
-	
+
 	Card(Suit suit, Rank rank) {
 		Suit = suit;
 		Rank = rank;
@@ -37,7 +37,7 @@ class Card {
 public class Deck {
 	private List<Card> deck = new ArrayList<Card>();
 	private int size;
-	
+
 	public int size() {
 		return size;
 	}
@@ -45,20 +45,20 @@ public class Deck {
 		size = deckSize;
 		Suit suitArr[] = Suit.values();
 		Rank rankArr[] = Rank.values();
-		int suitPos = 0;
-		int rankPos = 0;
-		for (int i=0; i<deckSize; ++i) {
-			Suit suit = suitArr[suitPos];
-			Rank rank = rankArr[rankPos];
+		int suitArrPos = 0;
+		int rankArrPos = 0;
+		for (int deckPos=0; deckPos<deckSize; ++deckPos) {
+			Suit suit = suitArr[suitArrPos];
+			Rank rank = rankArr[rankArrPos];
 			Card card = new Card(suit,rank);
 			deck.add(card);
-			++rankPos;
-			if ((i+1)%rankArr.length==0) {
-				++suitPos;
-				rankPos = 0;
+			++rankArrPos;
+			if ((deckPos+1)%rankArr.length==0) {
+				++suitArrPos;
+				rankArrPos = 0;
 			}
-			if (suitPos == Suit.values().length)
-				suitPos = 0;
+			if (suitArrPos == suitArr.length)
+				suitArrPos = 0;
 		}
 		sortOnce();
 	}
@@ -71,63 +71,66 @@ public class Deck {
 		}
 	}
 	public void display() {
-		for (int i=0; i < deck.size(); ++i)
-			System.out.println(deck.get(i).getRank() + " of " + deck.get(i).getSuit());
+		for (int deckPos=0; deckPos < deck.size(); ++deckPos)
+			System.out.println(deck.get(deckPos).getRank() + " of " + deck.get(deckPos).getSuit());
 	}
 	public void sortOnce() {
 		List<Card> temp = new ArrayList<Card>();
 		Rank rankArr[] = Rank.values();
 		Suit suitArr[] = Suit.values();
-		int rankPos = 0;
-		int suitPos = 0;
-		while (suitPos < suitArr.length) {
-			while (rankPos < rankArr.length) {
-				for (int i=0; i<deck.size(); ++i) {
-					if (deck.get(i).getRank() == rankArr[rankPos] && deck.get(i).getSuit() == suitArr[suitPos]) {
-						temp.add(deck.get(i));
-						deck.remove(i);
+		int rankArrPos = 0;
+		int suitArrPos = 0;
+		while (suitArrPos < suitArr.length) {
+			while (rankArrPos < rankArr.length) {
+				for (int deckPos=0; deckPos<deck.size(); ++deckPos) {
+					Rank rank = deck.get(deckPos).getRank();
+					Suit suit = deck.get(deckPos).getSuit();
+					if (rank == rankArr[rankArrPos] && suit == suitArr[suitArrPos]) {
+						temp.add(deck.get(deckPos));
+						deck.remove(deckPos);
 					}
 				}
-				++rankPos;
+				++rankArrPos;
 			}
-			++suitPos;
-			rankPos = 0;
+			++suitArrPos;
+			rankArrPos = 0;
 		}
-		
+
 		deck.addAll(temp);
-		for (int i=0; i<deck.size(); ++i) {
-			deck.get(i).setAbsolutePosition(i);
+		for (int deckPos=0; deckPos<deck.size(); ++deckPos) {
+			deck.get(deckPos).setAbsolutePosition(deckPos);
 		}
 	}
 	public void sortByRank() {
 		Rank rankArr[] = Rank.values();
-		int rankPos = 0;
+		int rankArrPos = 0;
 		List<Card> temp = new ArrayList<Card>();
 		while (!deck.isEmpty()) {
-			for (int i=0; i<deck.size(); ++i) {
-				if (deck.get(i).getRank() == rankArr[rankPos]) {
-					temp.add(deck.get(i));
-					deck.remove(i);
-					--i;
+			for (int deckPos=0; deckPos<deck.size(); ++deckPos) {
+				Rank rank = deck.get(deckPos).getRank();
+				if (rank == rankArr[rankArrPos]) {
+					temp.add(deck.get(deckPos));
+					deck.remove(deckPos);
+					--deckPos;
 				}
 			}
-			++rankPos;
+			++rankArrPos;
 		}
 		deck.addAll(temp);
 	}
 	public void sortBySuitAndRank() {
 		List<Card> temp = new ArrayList<Card>();
-		for (int i = 0; i<deck.size(); ++i)
+		for (int deckPos = 0; deckPos<deck.size(); ++deckPos)
 			temp.add(null);
-		
+
 		int pos;
-		for (int i = 0; i<deck.size(); ++i) {
-			pos = deck.get(i).getAbsolutePosition();
-			temp.set(pos, deck.get(i));
+		for (int deckPos = 0; deckPos<deck.size(); ++deckPos) {
+			pos = deck.get(deckPos).getAbsolutePosition();
+			temp.set(pos, deck.get(deckPos));
 		}
 		deck = temp;
 	}
-	
+
 	public static void main(String[] args) {
 		Deck deck = new Deck(52);
 		System.out.println(deck.size() + " cards in the deck.");
